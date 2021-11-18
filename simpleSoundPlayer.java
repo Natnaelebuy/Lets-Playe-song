@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -79,5 +80,78 @@ public class simpleSoundPlayer {
         System.out.print("Enter q to quit:");
 
     }
+    public static void handleMenu(String userInput) {
+        switch(userInput) {
+            case "h":
+                System.out.println("-->Home<--");
+                break;
+
+            case "s":
+                System.out.println("-->Search by title<--");
+                break;
+
+            case "l":
+                System.out.println("-->Library<--");
+                break;
+
+            case "p":
+                System.out.println("-->Play<--");
+                play();
+                break;
+            
+            case "q":
+                System.out.println("-->Quit<--");
+                break;
+
+            case "f":
+                System.out.println("-->favorite<--");
+                search();
+            default:
+
+                break;
+
+        }
+
+    }
+    /*
+
+     * plays an audio file
+
+     */
+
+    private static void search() {
+    }
+
+    public static void play() {
+        // open the audio file
+        final File file = new File("Nico  Vinz - Am I Wrong.wav");
+        try {
+            // create clip
+            Clip audioClip = AudioSystem.getClip();
+
+            // get input stream
+            final AudioInputStream in = getAudioInputStream(file);
+            audioClip.open(in);
+            audioClip.setMicrosecondPosition(0);
+            audioClip.loop(Clip.LOOP_CONTINUOUSLY);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+
+        }
+
+
  
+
+    }
+
+    private static AudioInputStream getAudioInputStream(File file) {
+        return null;
+    }
+
+
+
+ 
+
 }
+ 

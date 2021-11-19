@@ -1,157 +1,107 @@
 import java.io.File;
 import java.io.IOException;
- 
+import java.util.Scanner;
 import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
- 
+import javax.sound.sampled.DataLine.Info;
+import static javax.sound.sampled.AudioSystem.getAudioInputStream;
+import static javax.sound.sampled.AudioFormat.Encoding.PCM_SIGNED;
+/*
+    To compile: javac SpotifyLikeApp.java
+    To run: java SpotifyLikeApp
+ */
+// declares a class for the app
 public class simpleSoundPlayer {
- 
-    //defining the byte buffer
-    private static final int BUFFER_SIZE = 4096;
-     
-
-    void play(String filePath) {
-        File soundFile = new File(filePath);
-        try {
-          //convering the audio file to a stream
-            AudioInputStream sampleStream = AudioSystem.getAudioInputStream(soundFile);
- 
-            AudioFormat formatAudio = sampleStream.getFormat();
- 
-            DataLine.Info info = new DataLine.Info(SourceDataLine.class, formatAudio);
- 
-            SourceDataLine theAudioLine = (SourceDataLine) AudioSystem.getLine(info);
- 
-            theAudioLine.open(formatAudio);
- 
-            theAudioLine.start();
-             
-            System.out.println("Audio Player Started.");
-             
-            byte[] bufferBytes = new byte[BUFFER_SIZE];
-            int readBytes = -1;
- 
-            while ((readBytes = sampleStream.read(bufferBytes)) != -1) {
-                theAudioLine.write(bufferBytes, 0, readBytes);
-            }
-             
-            theAudioLine.drain();
-            theAudioLine.close();
-            sampleStream.close();
-             
-            System.out.println("Playback has been finished.");
-             
-        } catch (UnsupportedAudioFileException e) {
-            System.out.println("Unsupported file.");
-            e.printStackTrace();
-        } catch (LineUnavailableException e) {
-            System.out.println("Line not found.");
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.out.println("Experienced an error.");
-            e.printStackTrace();
-        }      
+    // global variables for the app
+    String status;
+    Long position;
+    static Clip audioClip;
+    // "main" makes this class a java app that can be executed
+    public static void main(final String[] args) {
+        // create a scanner for user input
+        Scanner input = new Scanner(System.in);
+        String userInput = "";
+        while (!userInput.equals("q")) {
+            menu();
+            // get input
+            userInput = input.nextLine();
+            // accept upper or lower case commands
+            userInput.toLowerCase();
+            // do something
+            handleMenu(userInput);
+        }
+        // close the scanner
+        input.close();
     }
-     
-    public static void main(String[] args) {
-        String thePath = "Nico  Vinz - Am I Wrong.wav";
-        simpleSoundPlayer player = new simpleSoundPlayer();
-        player.play(thePath);
-    }
+    /*
+     * displays the menu for the app
+     */
     public static void menu() {
-
         System.out.println("---- SpotifyLikeApp ----");
         System.out.println("[H]ome");
         System.out.println("[S]earch by title");
         System.out.println("[L]ibrary");
         System.out.println("[P]lay");
         System.out.println("[Q]uit");
-        System.out.println("[F]avorte");
-        System.out.println("1, pause");
-        
-
+        System.out.println("[F]avorite");
+        System.out.println("[R]ewindAudio");
+        System.out.println("[F]ast-forward");
         System.out.println("");
-        System.out.print("Enter q to quit:");
-
+        System.out.print("Enter q to Quit:");
     }
+    /*
+     * handles the user input for the app
+     */
     public static void handleMenu(String userInput) {
         switch(userInput) {
             case "h":
                 System.out.println("-->Home<--");
                 break;
-
             case "s":
                 System.out.println("-->Search by title<--");
                 break;
-
             case "l":
                 System.out.println("-->Library<--");
                 break;
-
             case "p":
                 System.out.println("-->Play<--");
                 play();
                 break;
-            
             case "q":
                 System.out.println("-->Quit<--");
                 break;
-
+            case "r":
+                System.out.println("-->RewindAudio<--");
+         
             case "f":
-                System.out.println("-->favorite<--");
-                search();
+                System.out.println("-->Fast-forward<--");
+                
             default:
-
                 break;
-
         }
-
     }
     /*
-
      * plays an audio file
-
      */
-
-    private static void search() {
-    }
-
     public static void play() {
         // open the audio file
-        final File file = new File("Nico  Vinz - Am I Wrong.wav");
+        final File file = new File("./newSong/Nico  Vinz - Am I Wrong.wav");
+        
         try {
             // create clip
-            Clip audioClip = AudioSystem.getClip();
-
+            audioClip = AudioSystem.getClip();
             // get input stream
             final AudioInputStream in = getAudioInputStream(file);
             audioClip.open(in);
             audioClip.setMicrosecondPosition(0);
             audioClip.loop(Clip.LOOP_CONTINUOUSLY);
-
         } catch(Exception e) {
             e.printStackTrace();
-
         }
-
-
- 
-
     }
-
-    private static AudioInputStream getAudioInputStream(File file) {
-        return null;
-    }
-
-
-
- 
-
 }
- 
